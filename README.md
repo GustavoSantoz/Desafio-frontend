@@ -1,30 +1,77 @@
-# React + TypeScript + Vite
+# Teste Prático para Desenvolvedores Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bem-vindo ao teste prático para desenvolvedores frontend! Neste teste, você terá a oportunidade de construir um aplicativo frontend para gerenciar o controle de inventário.
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Desenvolver um aplicativo frontend usando Vue.js ou React que permita o gerenciamento de um inventário. Você deve atender aos requisitos básicos e, se desejar, enfrentar o desafio extra opcional. Além disso, recomendamos aprimorar a experiência do usuário com a inclusão de ferramentas como Vite e um framework visual como Tailwind CSS, Shadcn ou Bootstrap.
 
-## Expanding the ESLint configuration
+## Requisitos Básicos
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Framework**: Escolha entre Vue.js ou React.
+2. **Funcionalidades**:
+   - Listar itens do inventário.
+   - Adicionar novos itens ao inventário.
+   - Editar itens existentes.
+   - Remover itens do inventário.
+3. **Interface do Usuário**: Use um framework visual como Tailwind CSS, Shadcn ou Bootstrap para melhorar a experiência do usuário.
 
-- Configure the top-level `parserOptions` property like this:
+## Desafio Extra Opcional
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+- Implementar autenticação de usuário.
+- Adicionar paginação à lista de itens.
+- Implementar pesquisa e filtragem de itens no inventário.
+- Usar Vite como build tool.
+
+## Ferramentas Recomendadas
+
+- **Vite**: Uma ferramenta de build rápida e moderna.
+- **Tailwind CSS**: Um framework CSS utilitário para estilização rápida.
+- **Shadcn**: Outra opção de framework visual.
+- **Bootstrap**: Um framework CSS popular para desenvolvimento responsivo.
+
+## Estrutura do Projeto
+
+```plaintext
+project-root
+│
+├── public
+│   └── index.html
+├── src
+│   ├── components
+│   │   └── [seus-componentes].jsx
+│   ├── pages
+│   │   └── [suas-paginas].jsx
+│   ├── App.jsx
+│   └── index.js
+├── package.json
+└── README.md
+
+
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Instruções para Iniciar o Projeto
+
+1. Clone este repositório:
+
+```bash
+git clone https://github.com/GustavoSantoz/Desafio-frontend.git
+```
+
+2. Entre na pasta do projeto:
+
+```bash
+cd Desafio-frontend
+```
+
+3. Instale as dependências:
+
+```bash
+npm install
+```
+
+4. Inicie o projeto:
+
+```bash
+npm run dev
+```
