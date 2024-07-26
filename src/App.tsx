@@ -1,6 +1,7 @@
 import "./App.css";
 
 import { create } from "zustand";
+import { Button } from "@/components/ui/button"
 
 interface BearState {
   bears: number;
@@ -30,6 +31,7 @@ function App() {
       <h1 className="text-3xl font-bold">
         <BearCounter />
         <Controls />
+        <Button>Click me</Button>
       </h1>
     </>
   );
