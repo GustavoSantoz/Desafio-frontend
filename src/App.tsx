@@ -1,14 +1,38 @@
-import './App.css'
+import "./App.css";
 
-function App() {
+import { create } from "zustand";
 
-  return (
-    <>
-      <h1 className='text-3xl font-bold'>
-        Teste Prático para Desenvolvedores Frontend
-      </h1>
-    </>
-  )
+interface BearState {
+  bears: number;
+  increasePopulation: () => void;
 }
 
-export default App
+const useStore = create<BearState>((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+  updateBears: (newBears: number) => set({ bears: newBears }),
+}));
+
+function BearCounter() {
+  const bears = useStore((state) => state.bears);
+  return <h1>{bears} around here...</h1>;
+}
+
+function Controls() {
+  const increasePopulation = useStore((state) => state.increasePopulation);
+  return <button onClick={increasePopulation}>one up</button>;
+}
+
+function App() {
+  return (
+    <>
+      <h1 className="text-3xl font-bold">
+        <BearCounter />
+        <Controls />
+      </h1>
+    </>
+  );
+}
+
+export default App;
