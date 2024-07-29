@@ -35,15 +35,20 @@ Desenvolver um aplicativo frontend usando Vue.js ou React que permita o gerencia
 ```plaintext
 project-root
 │
-├── public
-│   └── index.html
 ├── src
+│   ├── api
+│   │   └── [seus-endpoints].tsx
 │   ├── components
-│   │   └── [seus-componentes].jsx
+│   │   └── [seus-componentes].tsx
 │   ├── pages
-│   │   └── [suas-paginas].jsx
-│   ├── App.jsx
+│   │   └── [suas-paginas].tsx
+│   ├── routes
+│   │   └── [rotas].tsx
+│   ├── utils
+│   │   └── [seus-utilitarios].tsx
+│   ├── App.tsx
 │   └── index.js
+├── .env
 ├── package.json
 └── README.md
 
