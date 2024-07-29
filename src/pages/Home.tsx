@@ -1,5 +1,14 @@
+import React from "react";
+import CardLogin from "@/components/Login/CardLogin";
+
 const Home: React.FC = () => {
-  return <h1>Home</h1>;
+  return (
+    <>
+      <main className="flex justify-center items-center flex-col mt-20 ">
+        <CardLogin />
+      </main>
+    </>
+  );
 };
 
 export default Home;
