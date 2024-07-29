@@ -1,5 +1,6 @@
 import { BrowserRouter as Routers, Routes, Route } from "react-router-dom";
 import Home from "@/pages/Home.tsx";
+import InventoryPage from "@/pages/Inventory.tsx";
 
 export default function Rotas() {
   return (
@@ -7,7 +8,7 @@ export default function Rotas() {
       <Routers>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Produtos" element={<h1>Produtos</h1>} />
+          <Route path="/inventory" element={<InventoryPage />} />
           <Route path="/Produtos/:id" element={<h1>Produto</h1>} />
         </Routes>
       </Routers>
