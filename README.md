@@ -50,6 +50,17 @@ project-root
 
 ```
 
+## Dependências
+
+O projeto usa as seguintes dependências:
+
+- **React**: ^18.3.1
+- **React Hook Form**: ^7.52.1
+- **Supabase**: ^2.44.4
+- **Tailwind CSS**: ^3.4.7
+- **Vite**: ^5.3.4
+- **Zustand**: ^4.5.4
+
 ## Instruções para Iniciar o Projeto
 
 1. Clone este repositório:
