@@ -7,7 +7,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => {
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full">
       <Input
         type="text"
         placeholder="Pesquisar itens..."
