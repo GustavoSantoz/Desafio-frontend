@@ -83,7 +83,7 @@ export default function InventoryPage() {
       }
 
       if (item.images) {
-        const imagePaths = item.images; 
+        const imagePaths = item.images;
 
         const { error: deleteImagesError } = await supabase.storage
           .from("items")
@@ -116,9 +116,14 @@ export default function InventoryPage() {
     }
   };
 
-  const filteredInventory = inventory.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredInventory = inventory.filter((item) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      item.name.toLowerCase().includes(search) ||
+      item.description.toLowerCase().includes(search) ||
+      item.category.toLowerCase().includes(search)
+    );
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
