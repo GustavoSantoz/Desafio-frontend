@@ -1,33 +1,32 @@
 import supabase from "@/api/supabaseClient";
 
-async function uploadImages(selectedFiles: File[]): Promise<string[]> {
+export async function uploadImages(selectedFiles: File[]): Promise<string[]> {
   const imageUrls: string[] = [];
 
   for (const file of selectedFiles) {
     try {
-      const { error: uploadError } = await supabase.storage
+      const filePath = `public/${file.name}`;
+      const { error } = await supabase.storage
         .from("items")
-        .upload(`public/${file.name}`, file);
+        .upload(filePath, file);
 
-      if (uploadError) {
-        throw new Error(`Error uploading image: ${uploadError.message}`);
+      if (error) {
+        throw new Error(`Error uploading image: ${error.message}`);
       }
 
-      const { data: publicData } = await supabase.storage
+      const { data: publicData } = supabase.storage
         .from("items")
-        .getPublicUrl(`public/${file.name}`);
+        .getPublicUrl(filePath);
 
-      if (!publicData) {
+      if (publicData) {
+        imageUrls.push(publicData.publicUrl);
+      } else {
         throw new Error("Error getting public URL: publicData is undefined");
       }
-
-      imageUrls.push(publicData.publicUrl);
     } catch (error) {
       if (error instanceof Error) {
-        console.error(`Upload failed: ${error.message}`);
-        throw error;
+        throw new Error(`Upload failed: ${error.message}`);
       } else {
-        console.error("Unknown error occurred during upload.");
         throw new Error("Unknown error occurred during upload.");
       }
     }
@@ -35,5 +34,3 @@ async function uploadImages(selectedFiles: File[]): Promise<string[]> {
 
   return imageUrls;
 }
-
-export { uploadImages };

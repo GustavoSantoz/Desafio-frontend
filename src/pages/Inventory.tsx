@@ -17,6 +17,7 @@ interface Item {
 export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [inventory, setInventory] = useState<Item[]>([]);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -30,7 +31,11 @@ export default function InventoryPage() {
     };
 
     fetchItems();
-  }, []);
+  }, [refresh]);
+
+  const handleItemAdded = () => {
+    setRefresh((prev) => !prev);
+  };
 
   const filteredInventory = inventory.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,7 +45,7 @@ export default function InventoryPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col items-center w-full">
         <div className="flex flex-row-reverse justify-between items-center h-full w-full mb-6">
-          <ItemFormModal /> {/* Substitua o botão de link pelo modal */}
+          <ItemFormModal onItemAdded={handleItemAdded} />
           <h1 className="text-2xl font-bold">Inventário</h1>
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />

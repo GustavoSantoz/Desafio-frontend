@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 import { uploadImages } from "@/utils/uploadsImages";
+import supabase from "@/api/supabaseClient";
 import {
   Dialog,
   DialogClose,
@@ -27,7 +28,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const ItemFormModal: React.FC = () => {
+interface ItemFormModalProps {
+  onItemAdded: () => void;
+}
+
+const ItemFormModal: React.FC<ItemFormModalProps> = ({ onItemAdded }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     register,
@@ -40,10 +45,9 @@ const ItemFormModal: React.FC = () => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const imageUrls = await uploadImages(selectedFiles);
-
       await saveItem({ ...data, images: imageUrls });
-
       toast.success("Item cadastrado com sucesso!");
+      onItemAdded();
     } catch (error) {
       toast.error("Erro ao cadastrar o item");
     }
@@ -69,7 +73,6 @@ const ItemFormModal: React.FC = () => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Campos do formulário */}
           <div>
             <Label htmlFor="name">Nome</Label>
             <Input id="name" {...register("name")} />
@@ -128,7 +131,17 @@ const ItemFormModal: React.FC = () => {
 };
 
 async function saveItem(item: FormData & { images: string[] }) {
-  console.log("Salvando item:", item);
+  const { name, description, quantity, category, images } = item;
+
+  const { data, error } = await supabase
+    .from("items")
+    .insert([{ name, description, quantity, category, images }]);
+
+  if (error) {
+    throw new Error(`Erro ao salvar item: ${error.message}`);
+  }
+
+  return data;
 }
 
 export default ItemFormModal;
