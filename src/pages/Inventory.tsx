@@ -72,16 +72,47 @@ export default function InventoryPage() {
 
   const handleDeleteItem = async (itemId: number) => {
     try {
-      const { error } = await supabase.from("items").delete().eq("id", itemId);
+      const { data: item, error: fetchError } = await supabase
+        .from("items")
+        .select("images")
+        .eq("id", itemId)
+        .single();
 
-      if (error) {
-        throw new Error(`Erro ao excluir o item: ${error.message}`);
+      if (fetchError) {
+        throw new Error(`Erro ao buscar o item: ${fetchError.message}`);
       }
 
-      toast.success("Item excluído com sucesso!");
+      if (item.images) {
+        const imagePaths = item.images; 
+
+        const { error: deleteImagesError } = await supabase.storage
+          .from("items")
+          .remove(imagePaths);
+
+        if (deleteImagesError) {
+          throw new Error(
+            `Erro ao excluir imagens: ${deleteImagesError.message}`
+          );
+        }
+      }
+
+      const { error: deleteItemError } = await supabase
+        .from("items")
+        .delete()
+        .eq("id", itemId);
+
+      if (deleteItemError) {
+        throw new Error(`Erro ao excluir o item: ${deleteItemError.message}`);
+      }
+
+      toast.success("Item e imagens excluídos com sucesso!");
       setRefresh((prev) => !prev);
-    } catch (error) {
-      toast.error("Erro ao excluir o item");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(`Erro ao excluir o item: ${error.message}`);
+      } else {
+        toast.error("Erro desconhecido ao excluir o item");
+      }
     }
   };
 
