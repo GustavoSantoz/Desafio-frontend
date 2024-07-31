@@ -1,6 +1,5 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react"; 
 
 interface Item {
   id: number;
@@ -13,9 +12,10 @@ interface Item {
 
 interface ItemCardProps {
   item: Item;
+  onEdit: (item: Item) => void;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ item, onEdit }) => {
   return (
     <div key={item.id} className="bg-slate-200 rounded-md shadow-sm overflow-hidden">
       <div className="relative w-full h-48">
@@ -40,9 +40,18 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
           <p className="text-gray-700 font-semibold">Quantidade: {item.quantity}</p>
           <p className="text-primary font-semibold">{item.category}</p>
         </div>
-        <Button variant="outline" className="w-full mt-4">
-          Ver Detalhes
-        </Button>
+        <div className="flex justify-between items-center mt-4">
+          <Button variant="outline" className="w-full">
+            Ver Detalhes
+          </Button>
+          <Button
+            variant="outline"
+            className="ml-2"
+            onClick={() => onEdit(item)}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

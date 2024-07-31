@@ -3,7 +3,8 @@ import supabase from "@/api/supabaseClient";
 import { toast } from "react-toastify";
 import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";
-import ItemFormModal from "@/components/Inventory/ItemForm";
+import ItemEditModal from "@/components/Inventory/EditModal";
+import ItemFormModal from "@/components/Inventory/AddModal";
 
 interface Item {
   id: number;
@@ -17,6 +18,8 @@ interface Item {
 export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [inventory, setInventory] = useState<Item[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -34,6 +37,16 @@ export default function InventoryPage() {
   }, [refresh]);
 
   const handleItemAdded = () => {
+    setRefresh((prev) => !prev); 
+  };
+
+  const handleEditItem = (item: Item) => {
+    setSelectedItem(item);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveItem = async (updatedItem: Item) => {
+    setIsEditModalOpen(false);
     setRefresh((prev) => !prev);
   };
 
@@ -52,9 +65,17 @@ export default function InventoryPage() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredInventory.map((item) => (
-          <ItemCard key={item.id} item={item} />
+          <ItemCard key={item.id} item={item} onEdit={handleEditItem} />
         ))}
       </div>
+      {selectedItem && (
+        <ItemEditModal
+          item={selectedItem}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveItem}
+        />
+      )}
     </div>
   );
 }
