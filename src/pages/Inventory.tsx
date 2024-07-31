@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";
 import ItemEditModal from "@/components/Inventory/EditModal";
-import ItemFormModal from "@/components/Inventory/AddModal";
+import ItemFormModal from "@/components/Inventory/Add/AddModal";
 import { FormData } from "@/components/Inventory/EditModal";
 
 interface Item {
