@@ -38,7 +38,7 @@ export default function InventoryPage() {
   }, [refresh]);
 
   const handleItemAdded = () => {
-    setRefresh((prev) => !prev); 
+    setRefresh((prev) => !prev);
   };
 
   const handleEditItem = (item: Item) => {
@@ -64,8 +64,22 @@ export default function InventoryPage() {
 
       toast.success("Item atualizado com sucesso!");
       setRefresh((prev) => !prev);
-    setIsEditModalOpen(false);
-    setRefresh((prev) => !prev);
+      setIsEditModalOpen(false);
+    } catch (error) {
+      toast.error("Erro ao atualizar o item");
+    }
+  };
+
+  const handleDeleteItem = async (itemId: number) => {
+    try {
+      const { error } = await supabase.from("items").delete().eq("id", itemId);
+
+      if (error) {
+        throw new Error(`Erro ao excluir o item: ${error.message}`);
+      }
+
+      toast.success("Item excluído com sucesso!");
+      setRefresh((prev) => !prev);
     } catch (error) {
       toast.error("Erro ao excluir o item");
     }
