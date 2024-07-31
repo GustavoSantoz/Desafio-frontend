@@ -6,20 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
-import { uploadImages } from "@/utils/uploadsImages.tsx"; // Ajuste o caminho conforme necessário
-import saveItem from "@/utils/Save";
+import { uploadImages } from "@/utils/uploadsImages";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const schema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().min(1, "Descrição é obrigatória"),
   quantity: z.number().min(1, "Quantidade deve ser pelo menos 1").nonnegative(),
   category: z.string().min(1, "Categoria é obrigatória"),
-  images: z.array(z.instanceof(File)).max(4, "Máximo de 4 imagens"),
 });
 
-export type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof schema>;
 
-const ItemForm: React.FC = () => {
+const ItemFormModal: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     register,
@@ -31,23 +39,13 @@ const ItemForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      if (!selectedFiles || selectedFiles.length === 0) {
-        throw new Error("No files selected");
-      }
-
       const imageUrls = await uploadImages(selectedFiles);
-      if (!imageUrls || imageUrls.length === 0) {
-        throw new Error("Failed to upload images");
-      }
 
-      await saveItem(data, imageUrls);
+      await saveItem({ ...data, images: imageUrls });
+
       toast.success("Item cadastrado com sucesso!");
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(`Erro ao cadastrar o item: ${error.message}`);
-      } else {
-        toast.error("Erro ao cadastrar o item");
-      }
+      toast.error("Erro ao cadastrar o item");
     }
   };
 
@@ -59,58 +57,78 @@ const ItemForm: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Cadastro de Item</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <Label htmlFor="name">Nome</Label>
-          <Input id="name" {...register("name")} />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-        </div>
-        <div>
-          <Label htmlFor="description">Descrição</Label>
-          <Input id="description" {...register("description")} />
-          {errors.description && (
-            <p className="text-red-500">{errors.description.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="quantity">Quantidade</Label>
-          <Input
-            type="number"
-            id="quantity"
-            {...register("quantity", { valueAsNumber: true })}
-          />
-          {errors.quantity && (
-            <p className="text-red-500">{errors.quantity.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="category">Categoria</Label>
-          <Input id="category" {...register("category")} />
-          {errors.category && (
-            <p className="text-red-500">{errors.category.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="images">Imagens</Label>
-          <Input
-            type="file"
-            id="images"
-            accept="image/*"
-            multiple
-            onChange={handleFileChange}
-          />
-          {errors.images && (
-            <p className="text-red-500">{errors.images.message}</p>
-          )}
-        </div>
-        <Button type="submit" className="w-full">
-          Cadastrar
-        </Button>
-      </form>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Adicionar Novo Item</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Cadastro de Item</DialogTitle>
+          <DialogDescription>
+            Preencha o formulário abaixo para cadastrar um novo item.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Campos do formulário */}
+          <div>
+            <Label htmlFor="name">Nome</Label>
+            <Input id="name" {...register("name")} />
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="description">Descrição</Label>
+            <Input id="description" {...register("description")} />
+            {errors.description && (
+              <p className="text-red-500">{errors.description.message}</p>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="quantity">Quantidade</Label>
+            <Input
+              type="number"
+              id="quantity"
+              {...register("quantity", { valueAsNumber: true })}
+            />
+            {errors.quantity && (
+              <p className="text-red-500">{errors.quantity.message}</p>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="category">Categoria</Label>
+            <Input id="category" {...register("category")} />
+            {errors.category && (
+              <p className="text-red-500">{errors.category.message}</p>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="images">Imagens</Label>
+            <Input
+              type="file"
+              id="images"
+              multiple
+              onChange={handleFileChange}
+            />
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Fechar
+              </Button>
+            </DialogClose>
+            <Button type="submit" className="ml-2">
+              Cadastrar
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default ItemForm;
+async function saveItem(item: FormData & { images: string[] }) {
+  console.log("Salvando item:", item);
+}
+
+export default ItemFormModal;

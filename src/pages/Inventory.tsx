@@ -3,8 +3,7 @@ import supabase from "@/api/supabaseClient";
 import { toast } from "react-toastify";
 import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import ItemFormModal from "@/components/Inventory/ItemForm";
 
 interface Item {
   id: number;
@@ -38,14 +37,10 @@ export default function InventoryPage() {
   );
 
   return (
-    <div className="container mx-autopx-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col items-center w-full">
         <div className="flex flex-row-reverse justify-between items-center h-full w-full mb-6">
-          <Button variant="outline">
-            <Link to="/add" className="ml-2">
-              Adicionar um novo item
-            </Link>
-          </Button>
+          <ItemFormModal /> {/* Substitua o botão de link pelo modal */}
           <h1 className="text-2xl font-bold">Inventário</h1>
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />

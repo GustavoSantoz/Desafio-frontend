@@ -13,23 +13,21 @@ async function uploadImages(selectedFiles: File[]): Promise<string[]> {
         throw new Error(`Error uploading image: ${uploadError.message}`);
       }
 
-      const { data: publicData, error: publicUrlError } = supabase.storage
+      const { data: publicData } = await supabase.storage
         .from("items")
         .getPublicUrl(`public/${file.name}`);
 
-      if (publicUrlError) {
-        throw new Error(`Error getting public URL: ${publicUrlError.message}`);
-      }
-
-      if (publicData) {
-        imageUrls.push(publicData.publicUrl);
-      } else {
+      if (!publicData) {
         throw new Error("Error getting public URL: publicData is undefined");
       }
+
+      imageUrls.push(publicData.publicUrl);
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(`Upload failed: ${error.message}`);
+        console.error(`Upload failed: ${error.message}`);
+        throw error;
       } else {
+        console.error("Unknown error occurred during upload.");
         throw new Error("Unknown error occurred during upload.");
       }
     }
