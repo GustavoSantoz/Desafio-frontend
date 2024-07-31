@@ -8,7 +8,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,13 +16,14 @@ import { toast } from "react-toastify";
 import supabase from "@/api/supabaseClient";
 
 const schema = z.object({
+  id: z.number().nonnegative(),
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().min(1, "Descrição é obrigatória"),
   quantity: z.number().min(1, "Quantidade deve ser pelo menos 1").nonnegative(),
   category: z.string().min(1, "Categoria é obrigatória"),
 });
 
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
 interface ItemEditModalProps {
   item: FormData;
@@ -54,18 +54,22 @@ const ItemEditModal: React.FC<ItemEditModalProps> = ({
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-
       const { error } = await supabase
         .from("items")
-        .update(data)
-        .eq("id", item.id);
+        .update({
+          name: data.name,
+          description: data.description,
+          quantity: data.quantity,
+          category: data.category
+        })
+        .eq("id", data.id);
 
       if (error) {
         throw new Error(`Erro ao atualizar o item: ${error.message}`);
       }
 
       toast.success("Item atualizado com sucesso!");
-      onSave(data); // Chama a função de salvar e fecha o modal
+      onSave(data); 
     } catch (error) {
       toast.error("Erro ao atualizar o item");
     }
@@ -73,15 +77,11 @@ const ItemEditModal: React.FC<ItemEditModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Editar Item</Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Item</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Campos do formulário */}
           <div>
             <Label htmlFor="name">Nome</Label>
             <Input id="name" {...register("name")} />

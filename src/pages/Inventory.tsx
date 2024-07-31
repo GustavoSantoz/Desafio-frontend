@@ -5,6 +5,7 @@ import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";
 import ItemEditModal from "@/components/Inventory/EditModal";
 import ItemFormModal from "@/components/Inventory/AddModal";
+import { FormData } from "@/components/Inventory/EditModal";
 
 interface Item {
   id: number;
@@ -45,9 +46,29 @@ export default function InventoryPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveItem = async (updatedItem: Item) => {
+  const handleSaveItem = async (data: FormData) => {
+    try {
+      const { error } = await supabase
+        .from("items")
+        .update({
+          name: data.name,
+          description: data.description,
+          quantity: data.quantity,
+          category: data.category,
+        })
+        .eq("id", data.id);
+
+      if (error) {
+        throw new Error(`Erro ao atualizar o item: ${error.message}`);
+      }
+
+      toast.success("Item atualizado com sucesso!");
+      setRefresh((prev) => !prev);
     setIsEditModalOpen(false);
     setRefresh((prev) => !prev);
+    } catch (error) {
+      toast.error("Erro ao excluir o item");
+    }
   };
 
   const filteredInventory = inventory.filter((item) =>
@@ -65,7 +86,12 @@ export default function InventoryPage() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredInventory.map((item) => (
-          <ItemCard key={item.id} item={item} onEdit={handleEditItem} />
+          <ItemCard
+            key={item.id}
+            item={item}
+            onEdit={handleEditItem}
+            onDelete={handleDeleteItem}
+          />
         ))}
       </div>
       {selectedItem && (
