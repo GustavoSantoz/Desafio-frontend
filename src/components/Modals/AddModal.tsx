@@ -1,42 +1,23 @@
-import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { toast } from "react-toastify";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import ItemForm from "../Form/ItemForm";
 import ImageUploader from "../Input/UploadInput";
-import { uploadImages } from "@/utils/uploadsImages";
-import { saveItem } from "@/utils/saveItem";
+import { useAddStore } from "@/stores/addStore";
+import { schemaAdd, ItemFormDataAdd } from "@/schemas/schemaAdd";
 import { Button } from "@/components/ui/button";
 
-const schema = z.object({
-  name: z.string().min(1, "Nome é obrigatório"),
-  description: z.string().min(1, "Descrição é obrigatória"),
-  quantity: z.number().min(1, "Quantidade deve ser pelo menos 1").nonnegative(),
-  category: z.string().min(1, "Categoria é obrigatória"),
-});
+const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
+  const { addItem } = useAddStore();
 
-type FormData = z.infer<typeof schema>;
-
-interface ItemFormModalProps {
-  onItemAdded: () => void;
-}
-
-const ItemFormModal: React.FC<ItemFormModalProps> = ({ onItemAdded }) => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  const { register, handleSubmit, formState: { errors } } = useForm<ItemFormDataAdd>({
+    resolver: zodResolver(schemaAdd),
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<ItemFormDataAdd> = async (data) => {
     try {
-      const imageUrls = await uploadImages(selectedFiles);
-      await saveItem({ ...data, images: imageUrls });
+      await addItem({ ...data, images: [] });
       toast.success("Item cadastrado com sucesso!");
       onItemAdded();
     } catch (error) {
@@ -58,7 +39,7 @@ const ItemFormModal: React.FC<ItemFormModalProps> = ({ onItemAdded }) => {
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <ItemForm errors={errors} register={register} />
-          <ImageUploader onFilesSelected={setSelectedFiles} />
+          <ImageUploader onFilesSelected={() => { }} />
           <DialogFooter className="sm:justify-end">
             <DialogClose asChild>
               <Button type="button" variant="secondary">

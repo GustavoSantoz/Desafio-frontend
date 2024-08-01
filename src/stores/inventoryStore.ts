@@ -99,7 +99,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     }
   },
 
-  handleDeleteItem: async (itemId) => {
+  handleDeleteItem: async (itemId: number) => {
     try {
       const { data: item, error: fetchError } = await supabase
         .from("items")
@@ -111,16 +111,19 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
         throw new Error(`Erro ao buscar o item: ${fetchError.message}`);
       }
 
-      if (item.images) {
+      if (item.images && item.images.length > 0) {
         const imagePaths = item.images;
-        const { error: deleteImagesError } = await supabase.storage
-          .from("items")
-          .remove(imagePaths);
 
-        if (deleteImagesError) {
-          throw new Error(
-            `Erro ao excluir imagens: ${deleteImagesError.message}`
-          );
+        if (imagePaths.length > 0) {
+          const { error: deleteImagesError } = await supabase.storage
+            .from("items")
+            .remove(imagePaths);
+
+          if (deleteImagesError) {
+            throw new Error(
+              `Erro ao excluir imagens: ${deleteImagesError.message}`
+            );
+          }
         }
       }
 
