@@ -4,6 +4,7 @@ import SearchBar from "@/components/Communs/Searchbar";
 import ItemCard from "@/components/Card/ItemCard";
 import ItemEditModal from "@/components/Modals/EditModal";
 import ItemFormModal from "@/components/Modals/AddModal";
+import UserAvatar from "@/components/Communs/Avatar";
 
 export default function InventoryPage() {
   const {
@@ -32,6 +33,7 @@ export default function InventoryPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col items-center w-full">
         <div className="flex flex-row-reverse justify-between items-center h-full w-full mb-6">
+          <UserAvatar />
           <ItemFormModal onItemAdded={handleItemAdded} />
           <h1 className="text-2xl font-bold">Inventário</h1>
         </div>
