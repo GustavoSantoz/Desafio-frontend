@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useInventoryStore } from "@/stores/inventoryStore";
-import SearchBar from "@/components/Inventory/Searchbar";
-import ItemCard from "@/components/Inventory/ItemCard";
-import ItemEditModal from "@/components/Inventory/EditModal";
-import ItemFormModal from "@/components/Inventory/Add/AddModal";
+import SearchBar from "@/components/Commun's/Searchbar";
+import ItemCard from "@/components/Card/ItemCard";
+import ItemEditModal from "@/components/Modals/EditModal";
+import ItemFormModal from "@/components/Modals/AddModal";
 
 export default function InventoryPage() {
   const {

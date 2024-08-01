@@ -1,4 +1,4 @@
-import AuthCard from "@/components/Auth/AuthCard";
+import AuthCard from "@/components/Card/AuthCard";
 
 const Home = () => {
   return (
