@@ -1,120 +1,27 @@
-import { useState, useEffect } from "react";
-import supabase from "@/Supabase/supabaseClient";
-import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { useInventoryStore } from "@/stores/inventoryStore";
 import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";
 import ItemEditModal from "@/components/Inventory/EditModal";
 import ItemFormModal from "@/components/Inventory/Add/AddModal";
-import { FormData } from "@/components/Inventory/EditModal";
-
-interface Item {
-  id: number;
-  name: string;
-  description: string;
-  quantity: number;
-  category: string;
-  images: string[];
-}
 
 export default function InventoryPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [inventory, setInventory] = useState<Item[]>([]);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [refresh, setRefresh] = useState(false);
+  const {
+    inventory,
+    selectedItem,
+    isEditModalOpen,
+    searchTerm,
+    setSearchTerm,
+    setIsEditModalOpen,
+    fetchItems,
+    handleItemAdded,
+    handleSaveItem,
+    handleDeleteItem
+  } = useInventoryStore();
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const { data, error } = await supabase.from("items").select("*");
-
-      if (error) {
-        toast.error("Erro ao buscar itens: " + error.message);
-      } else {
-        setInventory(data || []);
-      }
-    };
-
     fetchItems();
-  }, [refresh]);
-
-  const handleItemAdded = () => {
-    setRefresh((prev) => !prev);
-  };
-
-  const handleEditItem = (item: Item) => {
-    setSelectedItem(item);
-    setIsEditModalOpen(true);
-  };
-
-  const handleSaveItem = async (data: FormData) => {
-    try {
-      const { error } = await supabase
-        .from("items")
-        .update({
-          name: data.name,
-          description: data.description,
-          quantity: data.quantity,
-          category: data.category,
-        })
-        .eq("id", data.id);
-
-      if (error) {
-        throw new Error(`Erro ao atualizar o item: ${error.message}`);
-      }
-
-      toast.success("Item atualizado com sucesso!");
-      setRefresh((prev) => !prev);
-      setIsEditModalOpen(false);
-    } catch (error) {
-      toast.error("Erro ao atualizar o item");
-    }
-  };
-
-  const handleDeleteItem = async (itemId: number) => {
-    try {
-      const { data: item, error: fetchError } = await supabase
-        .from("items")
-        .select("images")
-        .eq("id", itemId)
-        .single();
-
-      if (fetchError) {
-        throw new Error(`Erro ao buscar o item: ${fetchError.message}`);
-      }
-
-      if (item.images) {
-        const imagePaths = item.images;
-
-        const { error: deleteImagesError } = await supabase.storage
-          .from("items")
-          .remove(imagePaths);
-
-        if (deleteImagesError) {
-          throw new Error(
-            `Erro ao excluir imagens: ${deleteImagesError.message}`
-          );
-        }
-      }
-
-      const { error: deleteItemError } = await supabase
-        .from("items")
-        .delete()
-        .eq("id", itemId);
-
-      if (deleteItemError) {
-        throw new Error(`Erro ao excluir o item: ${deleteItemError.message}`);
-      }
-
-      toast.success("Item e imagens excluídos com sucesso!");
-      setRefresh((prev) => !prev);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(`Erro ao excluir o item: ${error.message}`);
-      } else {
-        toast.error("Erro desconhecido ao excluir o item");
-      }
-    }
-  };
+  }, [fetchItems]);
 
   const filteredInventory = inventory.filter((item) => {
     const search = searchTerm.toLowerCase();
@@ -139,7 +46,10 @@ export default function InventoryPage() {
           <ItemCard
             key={item.id}
             item={item}
-            onEdit={handleEditItem}
+            onEdit={(item) => {
+              setIsEditModalOpen(true);
+              useInventoryStore.setState({ selectedItem: item });
+            }}
             onDelete={handleDeleteItem}
           />
         ))}
