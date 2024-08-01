@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useInventoryStore } from "@/stores/inventoryStore";
-import SearchBar from "@/components/Commun's/Searchbar";
+import SearchBar from "@/components/Communs/Searchbar";
 import ItemCard from "@/components/Card/ItemCard";
 import ItemEditModal from "@/components/Modals/EditModal";
 import ItemFormModal from "@/components/Modals/AddModal";

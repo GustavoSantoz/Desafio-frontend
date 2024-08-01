@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Campo from "../Commun's/Campo";
+import Campo from "../Communs/Campo";
 import { useInventoryStore } from "@/stores/inventoryStore";
 import { useEffect } from "react";
 import { editItemSchema, EditItemFormData } from "@/schemas/schemaEdit";
