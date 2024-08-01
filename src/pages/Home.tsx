@@ -1,7 +1,6 @@
-import AuthCard from "@/components/Form/AuthCard";
-import React from "react";
+import AuthCard from "@/components/Auth/AuthCard";
 
-const Home: React.FC = () => {
+const Home = () => {
   return (
     <>
       <main className="flex justify-center items-center flex-col mt-20 ">

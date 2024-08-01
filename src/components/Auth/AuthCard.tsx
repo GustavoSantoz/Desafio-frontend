@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import Form from "./Form";
+import Form from "./AuthForm";
 import { useAuthStore } from "@/stores/authStore";
 
 const AuthCard = () => {

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { schema, FormData } from "@/utils/schema";
 import { Button } from "@/components/ui/button";
 import supabase from "@/api/supabaseClient";
-import FormInput from "./FormInput";
+import FormInput from "./AuthInput";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 
