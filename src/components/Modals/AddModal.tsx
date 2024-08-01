@@ -5,7 +5,7 @@ import * as z from "zod";
 import { toast } from "react-toastify";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import ItemForm from "../Form/ItemForm";
-import ImageUploader from "../Commun's/UploadInput";
+import ImageUploader from "../Input/UploadInput";
 import { uploadImages } from "@/utils/uploadsImages";
 import { saveItem } from "@/utils/saveItem";
 import { Button } from "@/components/ui/button";

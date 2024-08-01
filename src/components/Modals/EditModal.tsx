@@ -1,121 +1,62 @@
-import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
-import supabase from "@/Supabase/supabaseClient";
+import Campo from "../Commun's/Campo";
+import { useInventoryStore } from "@/stores/inventoryStore";
+import { useEffect } from "react";
+import { editItemSchema, EditItemFormData } from "@/schemas/schemaEdit";
 
-const schema = z.object({
-  id: z.number().nonnegative(),
-  name: z.string().min(1, "Nome é obrigatório"),
-  description: z.string().min(1, "Descrição é obrigatória"),
-  quantity: z.number().min(1, "Quantidade deve ser pelo menos 1").nonnegative(),
-  category: z.string().min(1, "Categoria é obrigatória"),
-});
-
-export type FormData = z.infer<typeof schema>;
-
-interface ItemEditModalProps {
-  item: FormData;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: FormData) => void;
-}
-
-const ItemEditModal: React.FC<ItemEditModalProps> = ({
-  item,
-  isOpen,
-  onClose,
-  onSave,
-}) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: item,
+const EditModal = () => {
+  const { selectedItem, isEditModalOpen, setIsEditModalOpen, handleSaveItem } = useInventoryStore();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<EditItemFormData>({
+    resolver: zodResolver(editItemSchema),
+    defaultValues: selectedItem || {
+      id: 0,
+      name: "",
+      description: "",
+      quantity: 1,
+      category: "",
+    },
   });
 
   useEffect(() => {
-    reset(item); 
-  }, [item, reset]);
-
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      const { error } = await supabase
-        .from("items")
-        .update({
-          name: data.name,
-          description: data.description,
-          quantity: data.quantity,
-          category: data.category
-        })
-        .eq("id", data.id);
-
-      if (error) {
-        throw new Error(`Erro ao atualizar o item: ${error.message}`);
-      }
-
-      toast.success("Item atualizado com sucesso!");
-      onSave(data); 
-    } catch (error) {
-      toast.error("Erro ao atualizar o item");
+    if (selectedItem) {
+      reset(selectedItem);
     }
+  }, [selectedItem, reset]);
+
+  const onSubmit: SubmitHandler<EditItemFormData> = async (data) => {
+    await handleSaveItem(data);
+    setIsEditModalOpen(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isEditModalOpen} onOpenChange={() => setIsEditModalOpen(false)}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Item</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Nome</Label>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Campo label="Nome" htmlFor="name">
             <Input id="name" {...register("name")} />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="description">Descrição</Label>
+            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+          </Campo>
+          <Campo label="Descrição" htmlFor="description">
             <Input id="description" {...register("description")} />
-            {errors.description && (
-              <p className="text-red-500">{errors.description.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="quantity">Quantidade</Label>
-            <Input
-              type="number"
-              id="quantity"
-              {...register("quantity", { valueAsNumber: true })}
-            />
-            {errors.quantity && (
-              <p className="text-red-500">{errors.quantity.message}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="category">Categoria</Label>
+            {errors.description && <p className="text-red-500">{errors.description.message}</p>}
+          </Campo>
+          <Campo label="Quantidade" htmlFor="quantity">
+            <Input type="number" id="quantity" {...register("quantity", { valueAsNumber: true })} />
+            {errors.quantity && <p className="text-red-500">{errors.quantity.message}</p>}
+          </Campo>
+          <Campo label="Categoria" htmlFor="category">
             <Input id="category" {...register("category")} />
-            {errors.category && (
-              <p className="text-red-500">{errors.category.message}</p>
-            )}
-          </div>
+            {errors.category && <p className="text-red-500">{errors.category.message}</p>}
+          </Campo>
           <DialogFooter>
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={() => setIsEditModalOpen(false)}>
               Cancelar
             </Button>
             <Button type="submit">Salvar</Button>
@@ -126,4 +67,4 @@ const ItemEditModal: React.FC<ItemEditModalProps> = ({
   );
 };
 
-export default ItemEditModal;
+export default EditModal;

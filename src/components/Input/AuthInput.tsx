@@ -1,7 +1,7 @@
 import { UseFormRegister } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { FormData } from "@/utils/schema";
+import { FormData } from "@/schemas/schemaAuth";
 
 interface FormInputProps {
   id: keyof FormData;

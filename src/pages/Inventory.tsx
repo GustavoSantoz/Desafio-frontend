@@ -8,14 +8,10 @@ import ItemFormModal from "@/components/Modals/AddModal";
 export default function InventoryPage() {
   const {
     inventory,
-    selectedItem,
-    isEditModalOpen,
     searchTerm,
     setSearchTerm,
-    setIsEditModalOpen,
     fetchItems,
     handleItemAdded,
-    handleSaveItem,
     handleDeleteItem
   } = useInventoryStore();
 
@@ -46,22 +42,14 @@ export default function InventoryPage() {
           <ItemCard
             key={item.id}
             item={item}
-            onEdit={(item) => {
-              setIsEditModalOpen(true);
-              useInventoryStore.setState({ selectedItem: item });
+            onEdit={() => {
+              useInventoryStore.getState().handleEditItem(item);
             }}
             onDelete={handleDeleteItem}
           />
         ))}
       </div>
-      {selectedItem && (
-        <ItemEditModal
-          item={selectedItem}
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onSave={handleSaveItem}
-        />
-      )}
+      <ItemEditModal />
     </div>
   );
 }

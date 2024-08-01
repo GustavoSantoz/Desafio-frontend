@@ -1,10 +1,10 @@
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema, FormData } from "@/utils/schema";
+import { AuthSchema, FormData } from "@/schemas/schemaAuth";
 import { Button } from "@/components/ui/button";
 import supabase from "@/Supabase/supabaseClient";
-import FormInput from "../Auth/AuthInput";
+import FormInput from "../Input/AuthInput";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const Form = ({ isRegister, onToggle: handleToggle }: FormProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(AuthSchema),
     defaultValues: { email, password },
   });
 
