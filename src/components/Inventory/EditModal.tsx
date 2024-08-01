@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
-import supabase from "@/api/supabaseClient";
+import supabase from "@/Supabase/supabaseClient";
 
 const schema = z.object({
   id: z.number().nonnegative(),

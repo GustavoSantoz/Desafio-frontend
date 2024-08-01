@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import supabase from "@/api/supabaseClient";
+import supabase from "@/Supabase/supabaseClient";
 import { toast } from "react-toastify";
 import SearchBar from "@/components/Inventory/Searchbar";
 import ItemCard from "@/components/Inventory/ItemCard";

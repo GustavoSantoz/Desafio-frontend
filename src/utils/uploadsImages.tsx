@@ -1,4 +1,4 @@
-import supabase from "@/api/supabaseClient";
+import supabase from "@/Supabase/supabaseClient";
 
 export async function uploadImages(selectedFiles: File[]): Promise<string[]> {
   const imageUrls: string[] = [];

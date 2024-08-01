@@ -1,4 +1,4 @@
-import supabase from "@/api/supabaseClient";
+import supabase from "@/Supabase/supabaseClient";
 
 export async function saveItem(item: {
   name: string;
