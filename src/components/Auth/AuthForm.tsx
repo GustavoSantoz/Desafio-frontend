@@ -77,7 +77,7 @@ const Form = ({ isRegister, onToggle: handleToggle }: FormProps) => {
         {isLoading ? 'Loading...' : isRegister ? 'Cadastrar' : 'Acessar'}
       </Button>
       <Button type="button" className="w-full mt-2" onClick={handleToggle} disabled={isLoading}>
-        {isRegister ? 'Mudar para Login' : 'Mudar para Cadastro'}
+        {isRegister ? 'Fazer login' : 'Fazer cadastro'}
       </Button>
     </form>
   );
