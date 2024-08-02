@@ -23,7 +23,7 @@ const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const imageUrls = await uploadImages(selectedFiles);
-      await saveItem({ ...data, images: imageUrls });
+      await saveItem({ ...data, images: imageUrls, location: data.location });
       toast.success("Item cadastrado com sucesso!");
       onItemAdded();
     } catch (error) {

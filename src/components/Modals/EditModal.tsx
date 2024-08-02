@@ -18,6 +18,7 @@ const EditModal = () => {
       description: "",
       quantity: 1,
       category: "",
+      location: "",
     },
   });
 

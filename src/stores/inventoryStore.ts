@@ -17,6 +17,7 @@ interface FormData {
   description: string;
   quantity: number;
   category: string;
+  location: string;
 }
 
 interface InventoryState {
@@ -80,6 +81,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
           description: data.description,
           quantity: data.quantity,
           category: data.category,
+          location: data.location,
         })
         .eq("id", data.id);
 

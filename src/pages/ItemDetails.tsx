@@ -12,6 +12,16 @@ export interface Item {
     quantity: number;
     category: string;
     images: string[];
+    location: string;
+}
+
+export interface Movement {
+    id?: number;
+    itemId: number;
+    date: string;
+    origin: string;
+    destination: string;
+    quantity: number;
 }
 
 export default function ItemDetails() {
@@ -19,6 +29,11 @@ export default function ItemDetails() {
     const navigate = useNavigate();
     const [item, setItem] = useState<Item | null>(null);
     const [mainImage, setMainImage] = useState<string | null>(null);
+    const [newLocation, setNewLocation] = useState<string>("");
+    const [movements, setMovements] = useState<Movement[]>([]);
+    const [origin, setOrigin] = useState<string>("");
+    const [destination, setDestination] = useState<string>("");
+    const [movementQuantity, setMovementQuantity] = useState<number>(0);
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -27,7 +42,8 @@ export default function ItemDetails() {
                     .from("items")
                     .select("*")
                     .eq("id", id)
-                    .single(); 
+                    .single();
+
                 if (error) {
                     console.error("Erro ao buscar item:", error.message);
                     return;
@@ -37,6 +53,19 @@ export default function ItemDetails() {
                 if (data?.images.length) {
                     setMainImage(data.images[0]);
                 }
+                setNewLocation(data?.location || "");
+
+                const { data: movementsData, error: movementsError } = await supabase
+                    .from("movements")
+                    .select("*")
+                    .eq("itemId", id);
+
+                if (movementsError) {
+                    console.error("Erro ao buscar movimentações:", movementsError.message);
+                    return;
+                }
+
+                setMovements(movementsData || []);
             }
         };
 
@@ -64,7 +93,7 @@ export default function ItemDetails() {
                 throw new Error(`Erro ao excluir o item: ${deleteItemError.message}`);
             }
 
-            navigate("/inventory"); 
+            navigate("/inventory");
         } catch (error) {
             if (error instanceof Error) {
                 console.error(`Erro ao excluir o item: ${error.message}`);
@@ -76,6 +105,62 @@ export default function ItemDetails() {
 
     const handleImageClick = (image: string) => {
         setMainImage(image);
+    };
+
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewLocation(e.target.value);
+    };
+
+    const updateLocation = async () => {
+        if (item && newLocation !== item.location) {
+            try {
+                const { error } = await supabase
+                    .from("items")
+                    .update({ location: newLocation })
+                    .eq("id", item.id);
+
+                if (error) {
+                    throw new Error(`Erro ao atualizar a localização: ${error.message}`);
+                }
+
+                setItem({ ...item, location: newLocation });
+            } catch (error) {
+                console.error(`Erro ao atualizar a localização: ${(error as Error).message}`);
+            }
+        }
+    };
+
+    const handleMovementSubmit = async (e: React.FormEvent) => {
+        e.preventDefault(); 
+        if (item && origin && destination && movementQuantity > 0) {
+            try {
+                const { data, error } = await supabase
+                    .from("movements")
+                    .insert({
+                        itemId: item.id,
+                        date: new Date().toISOString(),
+                        origin,
+                        destination,
+                        quantity: movementQuantity,
+                    })
+                    .single();
+
+                if (error) {
+                    throw new Error(`Erro ao registrar a movimentação: ${error.message}`);
+                }
+
+                setMovements([...movements, data]);
+                setOrigin("");
+                setDestination("");
+                setMovementQuantity(0);
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error(`Erro ao registrar a movimentação: ${error.message}`);
+                } else {
+                    console.error("Erro desconhecido ao registrar a movimentação");
+                }
+            }
+        }
     };
 
     if (!item) return <p>Carregando...</p>;
@@ -97,15 +182,66 @@ export default function ItemDetails() {
                             <span className="font-medium">Categoria:</span>
                             <span>{item.category}</span>
                         </div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-medium">Localização:</span>
+                            <input
+                                type="text"
+                                value={newLocation}
+                                onChange={handleLocationChange}
+                                placeholder="Digite a nova localização"
+                                className="border rounded px-2 py-1 ml-2"
+                            />
+                            <Button
+                                variant="default"
+                                onClick={updateLocation}
+                            >
+                                Atualizar Localização
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 <Separator />
                 <div className="grid gap-4 text-sm leading-loose">
                     <h2 className="font-semibold text-lg">Rastreamento de Itens</h2>
+                    <div className="grid gap-2">
+                        <div className="flex items-center gap-2">
+                            <span className="font-medium">Localização Atual:</span>
+                            <span className="font-bold underline">{item.location}</span>
+                        </div>
+                    </div>
                 </div>
                 <Separator />
                 <div className="grid gap-4 text-sm leading-loose">
                     <h2 className="font-semibold text-lg">Registro de Movimentações</h2>
+                    <form onSubmit={handleMovementSubmit} className="grid gap-2">
+                        <input
+                            type="text"
+                            value={origin}
+                            onChange={(e) => setOrigin(e.target.value)}
+                            placeholder="Origem"
+                            className="border rounded px-2 py-1"
+                        />
+                        <input
+                            type="text"
+                            value={destination}
+                            onChange={(e) => setDestination(e.target.value)}
+                            placeholder="Destino"
+                            className="border rounded px-2 py-1"
+                        />
+                        <input
+                            type="number"
+                            value={movementQuantity}
+                            onChange={(e) => setMovementQuantity(Number(e.target.value))}
+                            placeholder="Quantidade"
+                            className="border rounded px-2 py-1"
+                        />
+                        <Button
+                            variant="default"
+                            type="submit"
+                        >
+                            Registrar Movimentação
+                        </Button>
+                    </form>
                 </div>
                 <Separator />
                 <div className="grid gap-4 text-sm leading-loose">
@@ -120,6 +256,14 @@ export default function ItemDetails() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
+                            {movements.map((movement, index) => (
+                                <TableRow key={index}>
+                                    <td>{new Date(movement.date).toLocaleString()}</td>
+                                    <td>{movement.origin}</td>
+                                    <td>{movement.destination}</td>
+                                    <td>{movement.quantity}</td>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </div>
@@ -136,9 +280,9 @@ export default function ItemDetails() {
                     <img
                         src={mainImage || "/placeholder.svg"}
                         alt="Imagem do Item"
-                        width={400}
-                        height={400}
-                        className="aspect-square object-contain border w-full rounded-lg overflow-hidden"
+                        width={600}
+                        height={600}
+                        className="aspect-square object-cover border w-full rounded-lg overflow-hidden"
                     />
                     <div className="hidden md:flex gap-4 items-start">
                         {item.images && item.images.map((image, index) => (

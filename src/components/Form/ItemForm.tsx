@@ -7,6 +7,7 @@ interface FormData {
   description: string;
   quantity: number;
   category: string;
+  location: string;
 }
 
 interface ItemFormProps {
@@ -46,6 +47,14 @@ const ItemForm = ({ errors, register }: ItemFormProps) => {
         {errors.category && (
           <p className="text-red-500">{errors.category.message}</p>
         )}
+      </div>
+      <div>
+        <Label htmlFor="location">Localização</Label>
+        <Input
+          id="location"
+          {...register("location")}
+        />
+        {errors.location && <p>{errors.location.message}</p>}
       </div>
     </>
   );
