@@ -1,7 +1,7 @@
 import { BrowserRouter as Routers, Routes, Route } from "react-router-dom";
 import Home from "@/pages/Home.tsx";
 import InventoryPage from "@/pages/Inventory.tsx";
-import ItemDetails from "@/pages/ItemDetails.tsx";
+import DetailsPage from "@/pages/DetailsPage.tsx";
 import NotFoundPage from "@/pages/Error";
 
 export default function RouterConfig() {
@@ -10,7 +10,7 @@ export default function RouterConfig() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/inventory" element={<InventoryPage />} />
-        <Route path="/items/:id" element={<ItemDetails />} />
+        <Route path="/items/:id" element={<DetailsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Routers>
