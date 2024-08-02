@@ -2,7 +2,7 @@ import { create } from "zustand";
 import supabase from "@/Supabase/supabaseClient";
 import { toast } from "react-toastify";
 import { uploadImages } from "@/utils/uploadsImages";
-import { ItemFormDataAdd } from "@/schemas/schemaAdd";
+import { FormData as ItemFormDataAdd } from "@/schemas/schemaAdd";
 
 interface AddStoreState {
   selectedFiles: File[];
@@ -21,18 +21,16 @@ const displayToast = (
 
 export const useAddStore = create<AddStoreState>((set, get) => ({
   selectedFiles: [],
-  
+
   setSelectedFiles: (files) => set({ selectedFiles: files }),
-  
+
   addItem: async (data: ItemFormDataAdd) => {
     try {
       const imageUrls = await uploadImages(get().selectedFiles);
-      const { error } = await supabase
-        .from("items")
-        .insert({
-          ...data,
-          images: imageUrls,
-        });
+      const { error } = await supabase.from("items").insert({
+        ...data,
+        images: imageUrls,
+      });
 
       if (error) {
         throw new Error(`Erro ao adicionar o item: ${error.message}`);
@@ -44,7 +42,7 @@ export const useAddStore = create<AddStoreState>((set, get) => ({
         "add-item-success"
       );
     } catch (error) {
-        const TypedError = error as Error;
+      const TypedError = error as Error;
       displayToast(
         "error",
         `Erro ao adicionar o item: ${TypedError.message}`,
