@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Pencil, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Item {
   id: number;
@@ -17,17 +18,24 @@ interface ItemCardProps {
 }
 
 const ItemCard = ({ item, onEdit, onDelete }: ItemCardProps) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/items/${item.id}`);
+  };
+
   return (
-    <div
-      key={item.id}
-      className="relative bg-slate-200 rounded-md shadow-sm overflow-hidden"
-    >
+    <div className="relative bg-slate-200 rounded-md shadow-sm overflow-hidden">
       <div className="relative w-full h-48">
         {item.images && item.images.length > 0 ? (
           <img
             src={item.images[0]}
             alt={item.name}
             className="w-full h-full object-contain p-2"
+            onError={(e) => {
+              console.error("Failed to load image:", e.currentTarget.src);
+              e.currentTarget.src = "/placeholder.svg";
+            }}
           />
         ) : (
           <img
@@ -41,13 +49,11 @@ const ItemCard = ({ item, onEdit, onDelete }: ItemCardProps) => {
         <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
         <p className="text-gray-500 mb-2">{item.description}</p>
         <div className="flex items-center justify-between">
-          <p className="text-gray-700 font-semibold">
-            Quantidade: {item.quantity}
-          </p>
+          <p className="text-gray-700 font-semibold">Quantidade: {item.quantity}</p>
           <p className="text-primary font-semibold">{item.category}</p>
         </div>
         <div className="flex gap-2 mt-4">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleViewDetails}>
             Ver Detalhes
           </Button>
           <Button

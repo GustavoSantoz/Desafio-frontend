@@ -114,16 +114,14 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       if (item.images && item.images.length > 0) {
         const imagePaths = item.images;
 
-        if (imagePaths.length > 0) {
-          const { error: deleteImagesError } = await supabase.storage
-            .from("items")
-            .remove(imagePaths);
+        const { error: deleteImagesError } = await supabase.storage
+          .from("items")
+          .remove(imagePaths);
 
-          if (deleteImagesError) {
-            throw new Error(
-              `Erro ao excluir imagens: ${deleteImagesError.message}`
-            );
-          }
+        if (deleteImagesError) {
+          throw new Error(
+            `Erro ao excluir imagens: ${deleteImagesError.message}`
+          );
         }
       }
 
@@ -141,6 +139,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
         "Item e imagens excluídos com sucesso!",
         "delete-item-success"
       );
+
       await get().fetchItems();
     } catch (error) {
       if (error instanceof Error) {
