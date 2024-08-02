@@ -15,7 +15,7 @@ interface ItemFormProps {
   register: UseFormRegister<FormData>;
 }
 
-const ItemForm: React.FC<ItemFormProps> = ({ errors, register }) => {
+const ItemForm = ({ errors, register }: ItemFormProps) => {
   return (
     <>
       <div>

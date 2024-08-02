@@ -5,7 +5,7 @@ interface SearchBarProps {
   setSearchTerm: (term: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => {
+const SearchBar = ({ searchTerm, setSearchTerm }: SearchBarProps) => {
   return (
     <div className="mb-6 w-full">
       <Input

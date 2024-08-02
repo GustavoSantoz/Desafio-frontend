@@ -6,7 +6,7 @@ interface ImageUploaderProps {
   onFilesSelected: (files: File[]) => void;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesSelected }) => {
+const ImageUploader = ({ onFilesSelected }: ImageUploaderProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {

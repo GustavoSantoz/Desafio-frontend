@@ -16,7 +16,7 @@ interface ItemCardProps {
   onDelete: (itemId: number) => void;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item, onEdit, onDelete }) => {
+const ItemCard = ({ item, onEdit, onDelete }: ItemCardProps) => {
   return (
     <div
       key={item.id}

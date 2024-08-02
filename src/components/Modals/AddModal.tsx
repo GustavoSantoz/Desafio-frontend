@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -8,9 +8,9 @@ import ImageUploader from "../Input/UploadInput";
 import { uploadImages } from "@/utils/uploadsImages";
 import { saveItem } from "@/utils/saveItem";
 import { Button } from "@/components/ui/button";
-import { schema, FormData } from "@/schemas/schemaAdd"; // Importando o schema do arquivo separado
+import { schema, FormData } from "@/schemas/schemaAdd";
 
-const ItemFormModal: React.FC<{ onItemAdded: () => void }> = ({ onItemAdded }) => {
+const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     register,
