@@ -47,8 +47,14 @@ const Form = ({ isRegister, onToggle: handleToggle }: FormProps) => {
         setLoading(false);
       }, 1500);
     } catch (error) {
+      let errorMessage = '';
       const typedError = error as Error;
-      toast.error(`${isRegister ? 'Cadastro' : 'Login'} falhou: ${typedError.message}`);
+      if (typedError.message === 'Invalid login credentials') {
+        errorMessage = 'email ou senha inválidos';
+      } else {
+        errorMessage = typedError.message;
+      }
+      toast.error(`${isRegister ? 'Cadastro' : 'Login'} falhou: ${errorMessage}`);
       setLoading(false);
     }
   };
