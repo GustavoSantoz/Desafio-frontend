@@ -80,7 +80,7 @@ const Form = ({ isRegister, onToggle: handleToggle }: FormProps) => {
         error={errors.password?.message}
       />
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Loading...' : isRegister ? 'Cadastrar' : 'Acessar'}
+        {isLoading ? 'Carregando...' : isRegister ? 'Cadastrar' : 'Acessar'}
       </Button>
       <Button type="button" className="w-full mt-2" onClick={handleToggle} disabled={isLoading}>
         {isRegister ? 'Fazer login' : 'Fazer cadastro'}
