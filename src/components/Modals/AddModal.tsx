@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { schema, FormData } from "@/schemas/schemaAdd";
 
 const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     register,
@@ -26,15 +27,16 @@ const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
       await saveItem({ ...data, images: imageUrls, location: data.location });
       toast.success("Item cadastrado com sucesso!");
       onItemAdded();
+      setIsOpen(false);
     } catch (error) {
       toast.error("Erro ao cadastrar o item");
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Adicionar Novo Item</Button>
+        <Button variant="outline" onClick={() => setIsOpen(true)}>Adicionar Novo Item</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -48,7 +50,7 @@ const ItemFormModal = ({ onItemAdded }: { onItemAdded: () => void }) => {
           <ImageUploader onFilesSelected={setSelectedFiles} />
           <DialogFooter className="sm:justify-end">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>
                 Fechar
               </Button>
             </DialogClose>
