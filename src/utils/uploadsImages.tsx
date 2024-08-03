@@ -1,11 +1,22 @@
 import supabase from "@/Supabase/supabaseClient";
 
+async function generateFileHash(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 export async function uploadImages(selectedFiles: File[]): Promise<string[]> {
   const imageUrls: string[] = [];
 
   for (const file of selectedFiles) {
     try {
-      const filePath = `public/${file.name}`;
+      const hash = await generateFileHash(file);
+      const fileExtension = file.name.split('.').pop(); 
+      const filePath = `public/${hash}.${fileExtension}`;
+
       const { error } = await supabase.storage
         .from("items")
         .upload(filePath, file);
