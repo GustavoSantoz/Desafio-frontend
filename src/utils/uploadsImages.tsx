@@ -1,11 +1,13 @@
 import supabase from "@/Supabase/supabaseClient";
 
-async function generateFileHash(file: File): Promise<string> {
-  const arrayBuffer = await file.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
+function generateRandomString(length: number) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+  return result;
 }
 
 export async function uploadImages(selectedFiles: File[]): Promise<string[]> {
@@ -13,8 +15,8 @@ export async function uploadImages(selectedFiles: File[]): Promise<string[]> {
 
   for (const file of selectedFiles) {
     try {
-      const hash = await generateFileHash(file);
-      const fileExtension = file.name.split('.').pop(); 
+      const hash = generateRandomString(8);
+      const fileExtension = file.name.split('.').pop();
       const filePath = `public/${hash}.${fileExtension}`;
 
       const { error } = await supabase.storage
